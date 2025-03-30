@@ -1,0 +1,136 @@
+{
+  "products": [
+    {
+      "id": "5ca07c5c-0f3c-415b-b81d-87c78f9a48ef",
+      "name": "Exclusive bottom-line functionalities",
+      "price": 964.39,
+      "category": "Books",
+      "brand": "Ward-Thompson",
+      "release_date": "2022-08-03",
+      "tags": [
+        "couple"
+      ]
+    },
+    {
+      "id": "d9101847-549d-4c6d-8a5b-9dd2bcfc35aa",
+      "name": "Fundamental 6thgeneration installation",
+      "price": 139.1,
+      "category": "Food",
+      "brand": "Lane Ltd",
+      "release_date": "2023-12-28",
+      "tags": [
+        "well",
+        "race",
+        "say"
+      ]
+    },
+    {
+      "id": "e2155599-0271-45d2-8547-370fc33c5635",
+      "name": "Organized coherent leverage",
+      "price": 782.77,
+      "category": "Beauty",
+      "brand": "Gonzales-Kelly",
+      "release_date": "2025-02-15",
+      "tags": [
+        "option",
+        "student"
+      ]
+    },
+    {
+      "id": "4ecbe038-b874-4607-8af0-5ba49dfd0156",
+      "name": "Inverse bi-directional Graphic Interface",
+      "price": 535.61,
+      "category": "Toys",
+      "brand": "Hampton LLC",
+      "release_date": "2022-12-27",
+      "tags": [
+        "what"
+      ]
+    },
+    {
+      "id": "06f19118-ea36-4670-ae1f-d95b108c3185",
+      "name": "Integrated solution-oriented archive",
+      "price": 794.86,
+      "category": "Toys",
+      "brand": "Arroyo, Soto and Frost",
+      "release_date": "2021-07-29",
+      "tags": [
+        "position",
+        "phone",
+        "guy",
+        "she",
+        "that"
+      ]
+    },
+    {
+      "id": "94a5bd61-53e8-46d1-8fdf-894308a3241d",
+      "name": "Enhanced dedicated concept",
+      "price": 385.65,
+      "category": "Food",
+      "brand": "Hayden Group",
+      "release_date": "2024-06-27",
+      "tags": [
+        "whole",
+        "keep",
+        "environment",
+        "drive"
+      ]
+    },
+    {
+      "id": "8ec6eabf-9cfd-4087-b1f4-92d3242d6599",
+      "name": "Cloned fault-tolerant access",
+      "price": 332.06,
+      "category": "Food",
+      "brand": "Mckenzie, Shah and Galvan",
+      "release_date": "2020-12-20",
+      "tags": [
+        "although",
+        "foreign",
+        "step",
+        "black",
+        "space"
+      ]
+    },
+    {
+      "id": "d582e161-e543-4212-8fee-33b29b9f2d85",
+      "name": "Switchable leadingedge complexity",
+      "price": 541.49,
+      "category": "Clothing",
+      "brand": "Jones and Sons",
+      "release_date": "2024-10-07",
+      "tags": [
+        "bit",
+        "onto",
+        "case",
+        "she"
+      ]
+    },
+    {
+      "id": "68c3c213-27d8-4033-aa7d-e69a40125b81",
+      "name": "Upgradable global migration",
+      "price": 267.66,
+      "category": "Books",
+      "brand": "Roberts, James and Martin",
+      "release_date": "2024-11-28",
+      "tags": [
+        "out",
+        "buy"
+      ]
+    },
+    {
+      "id": "4204ee9e-8951-4a9b-ac4c-94eaf1508016",
+      "name": "Balanced encompassing strategy",
+      "price": 807.0,
+      "category": "Books",
+      "brand": "Richardson-Jones",
+      "release_date": "2022-01-09",
+      "tags": [
+        "either",
+        "audience",
+        "in",
+        "I",
+        "safe"
+      ]
+    }
+  ]
+}
