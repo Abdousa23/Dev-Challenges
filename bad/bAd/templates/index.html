@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTful API Overfetching Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .user-switcher {
+            margin-bottom: 20px;
+        }
+        .data-display {
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .needed-data {
+            background-color: #e7ffe7;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        .wasted-data {
+            background-color: #ffeeee;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        .stats {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>RESTful API Overfetching Example</h1>
+    <p>This demonstrates how traditional RESTful APIs often send much more data than needed, resulting in wasted bandwidth and slower performance.</p>
+    
+    <div class="user-switcher">
+        <label for="user-select">Select User: </label>
+        <select id="user-select">
+            <option value="1">John Doe (User ID: 1)</option>
+            <option value="2">Jane Doe (User ID: 2)</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <!-- Profile View -->
+        <div class="panel">
+            <h2>Profile View</h2>
+            <p>This page only needs basic profile information:</p>
+            
+            <div class="needed-data">
+                <strong>Data actually needed:</strong>
+                <ul>
+                    <li>username</li>
+                    <li>full_name</li>
+                    <li>email</li>
+                    <li>profile_picture</li>
+                </ul>
+            </div>
+            
+            <button id="load-profile">Load Profile Data</button>
+            
+            <div id="profile-data" class="data-display"></div>
+            <div id="profile-stats" class="stats"></div>
+        </div>
+        
+        <!-- Settings View -->
+        <div class="panel">
+            <h2>Settings View</h2>
+            <p>This page only needs user preferences:</p>
+            
+            <div class="needed-data">
+                <strong>Data actually needed:</strong>
+                <ul>
+                    <li>username</li>
+                    <li>preferences</li>
+                </ul>
+            </div>
+            
+            <button id="load-settings">Load Settings Data</button>
+            
+            <div id="settings-data" class="data-display"></div>
+            <div id="settings-stats" class="stats"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userSelect = document.getElementById('user-select');
+            const loadProfileBtn = document.getElementById('load-profile');
+            const loadSettingsBtn = document.getElementById('load-settings');
+            const profileDataDisplay = document.getElementById('profile-data');
+            const settingsDataDisplay = document.getElementById('settings-data');
+            const profileStats = document.getElementById('profile-stats');
+            const settingsStats = document.getElementById('settings-stats');
+            
+            // Load profile data
+           
+                loadProfileBtn.addEventListener('click', function() {
+                const userId = userSelect.value;
+                const query = `
+        query GetUserProfile($id: String!) {
+            user(id: $id) {
+                username
+                full_name
+                email
+                profile_picture
+            }
+        }
+    `;
+    console.log(query)
+                
+    fetch('/graphql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: { id: userId }
+        })
+    })
+    .then(response => response.json())
+    .then(data => 
+    {console.log(data)
+        
+        const user= data.data.user
+        const responseSize = JSON.stringify(user).length;
+        document.getElementById('profile-data').innerHTML = 
+            `<div class="improved-data">
+                <strong>Response (${responseSize} bytes):</strong><br>
+                ${JSON.stringify(user, null, 2)}
+            </div>`;
+    });
+            });
+            
+            // Load settings data
+            loadSettingsBtn.addEventListener('click', function() {
+                const userId = userSelect.value;
+                const query = `
+                query GetUserSettings($id: String!) {
+                    user(id: $id) {
+                        username
+                        preferences {
+                            theme
+                            language
+                            notifications {
+                                email
+                                sms
+                                push
+                            }
+                        }
+                    }
+                }
+            `;
+            
+            fetch('/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables: { id: userId }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                const user= data.data.user
+                const responseSize = JSON.stringify(user).length;
+                document.getElementById('settings-data').innerHTML = 
+                    `<div class="improved-data">
+                        <strong>Response (${responseSize} bytes):</strong><br>
+                        ${JSON.stringify(user, null, 2)}
+                    </div>`;
+            
+            });
+        });
+    })
+    </script>
+</body>
+</html>
