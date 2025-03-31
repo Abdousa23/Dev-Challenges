@@ -1,0 +1,151 @@
+.captcha-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 400px;
+  margin: 2rem auto;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.cooldown {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.captcha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.refresh-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.refresh-button:hover {
+  background-color: #f5f5f5;
+}
+
+.captcha-image-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.captcha-image {
+  width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.success-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon {
+  color: #28a745;
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-success-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #28a745;
+}
+
+.captcha-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.captcha-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.status-container {
+  margin-top: 1rem;
+  min-height: 24px;
+}
+
+.error-message {
+  color: #dc3545;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.cooldown-timer {
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.attempts-counter {
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.verify-button {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: #007bff;
+  color: white;
+  margin-top: 1rem;
+}
+
+.verify-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.verify-button:not(:disabled):hover {
+  background-color: #0056b3;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
