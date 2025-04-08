@@ -1,151 +1,246 @@
+/* Captcha.css - Add this to your styles */
 .captcha-container {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 400px;
-  margin: 2rem auto;
-  background: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  position: relative;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-.cooldown {
-  opacity: 0.7;
-  pointer-events: none;
+.captcha-container.cooldown {
+  opacity: 0.75;
+  cursor: not-allowed;
 }
 
 .captcha-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.captcha-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
 }
 
 .refresh-button {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.2s;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
-.refresh-button:hover {
-  background-color: #f5f5f5;
+.refresh-button:hover:not(:disabled) {
+  color: #4b5563;
+  background-color: #f3f4f6;
+}
+
+.refresh-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .captcha-image-container {
   position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.captcha-image {
-  width: 100%;
-  height: auto;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-
-.success-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  background-color: #f9fafb;
+  height: 80px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.captcha-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(16, 185, 129, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
 .success-icon {
-  color: #28a745;
+  color: #10b981;
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+}
+
+.captcha-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.captcha-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.captcha-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.captcha-label {
+  font-size: 0.875rem;
+  color: #4b5563;
+  font-weight: 500;
 }
 
 .input-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.input-container.focused {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.captcha-input {
+  flex: 1;
+  padding: 0.625rem 0.75rem;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  letter-spacing: 0.05em;
+}
+
+.captcha-input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
 }
 
 .input-success-icon {
   position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #28a745;
-}
-
-.captcha-input {
-  width: 100%;
-  padding: 0.8rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.captcha-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  right: 0.75rem;
+  color: #10b981;
 }
 
 .status-container {
-  margin-top: 1rem;
-  min-height: 24px;
+  min-height: 1.5rem;
+  font-size: 0.875rem;
 }
 
 .error-message {
-  color: #dc3545;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-}
-
-.cooldown-timer {
-  color: #6c757d;
-  font-size: 0.9rem;
-  text-align: center;
+  gap: 0.25rem;
+  color: #ef4444;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .attempts-counter {
-  color: #6c757d;
-  font-size: 0.9rem;
-  text-align: center;
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.cooldown-timer {
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .verify-button {
-  width: 100%;
-  padding: 0.8rem;
+  padding: 0.625rem 1rem;
+  background-color: #3b82f6;
+  color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-  background-color: #007bff;
-  color: white;
-  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verify-button:hover:not(:disabled) {
+  background-color: #2563eb;
 }
 
 .verify-button:disabled {
-  background-color: #6c757d;
+  opacity: 0.65;
   cursor: not-allowed;
 }
 
-.verify-button:not(:disabled):hover {
-  background-color: #0056b3;
+.verify-button.success {
+  background-color: #10b981;
+  cursor: default;
 }
 
 .loading-spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: white;
+  border-top-color: #ffffff;
   animation: spin 1s linear infinite;
+  display: inline-block;
 }
 
-@keyframes spin {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
 }

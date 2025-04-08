@@ -1,30 +1,44 @@
-import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+import { NextRequest, NextResponse } from 'next/server';
+const CAPTCHA_API_URL = process.env.CAPTCHA_API_URL || 'http://localhost:3001/captcha';
+
+export async function POST(request: NextRequest) {
     try {
-        const { sessionId, answer } = await req.json(); // Parse the JSON body from the request
+        const body = await request.json();
+        const { sessionId, answer } = body;
 
-        const backendRes = await fetch("http://localhost:3001/captcha/validate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId, answer }),
-        });
-
-        if (!backendRes.ok) {
-            return NextResponse.json(
-                { error: "Failed to validate CAPTCHA" },
-                { status: backendRes.status }
-            );
+        if (!sessionId || !answer) {
+            return new NextResponse(JSON.stringify({ valid: false, error: 'Missing required fields' }), {
+                status: 400,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
         }
 
-        const result = await backendRes.json();
-        console.log(result)
-        return NextResponse.json({ valid: result.valid });
+        const response = await fetch(`${CAPTCHA_API_URL}/validate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ sessionId, answer })
+        });
+
+        const data = await response.json();
+
+        return new NextResponse(JSON.stringify({ valid: data.valid }), {
+            status: response.ok ? 200 : 400,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     } catch (error) {
-        console.error("Error validating CAPTCHA:", error);
-        return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
+        console.error('Error validating captcha:', error);
+        return new NextResponse(JSON.stringify({ valid: false, error: 'Failed to validate captcha' }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 }
