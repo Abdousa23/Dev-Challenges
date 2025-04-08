@@ -7,8 +7,7 @@ import ProductFilters from './ProductFilters';
 import UserFilters from './UserFilters';
 import ErrorBoundary from './ErrorBoundary';
 import { clientCache } from '@/lib/clientCache';
-import { FiSearch, FiX, FiDollarSign, FiTag, FiUserCheck } from 'react-icons/fi';
-import { FiInbox, FiRefreshCw } from 'react-icons/fi';
+import { FiSearch, FiX, FiDollarSign, FiTag, FiUserCheck, FiInbox, FiRefreshCw, FiXCircle } from 'react-icons/fi';
 
 type FilterTab = 'products' | 'users';
 
@@ -27,6 +26,8 @@ const FilterPanel = () => {
             company: '',
             job: '',
             searchQuery: '',
+            dateOfBirth: '',
+            phone: ''
         }
     });
 
@@ -57,26 +58,25 @@ const FilterPanel = () => {
             const baseUrl = `/api/filter/${activeTab}`;
             const searchParams = new URLSearchParams();
 
-            if (activeTab === 'products') {
-                // Type assertion for product filters
-                const productParams = params as typeof filters.products;
-                const { minPrice, maxPrice, categories, searchQuery } = productParams;
+            if (activeTab === 'products' && 'minPrice' in params) {
+                const { minPrice, maxPrice, categories, searchQuery } = params;
 
                 if (minPrice !== undefined) searchParams.set('minPrice', minPrice.toString());
                 if (maxPrice !== undefined) searchParams.set('maxPrice', maxPrice.toString());
                 if (categories.length) searchParams.set('categories', categories.join(','));
                 if (searchQuery) searchParams.set('searchQuery', searchQuery);
-            } else {
-                // Type assertion for user filters
-                const userParams = params as typeof filters.users;
-                const { active, country, company, job, searchQuery } = userParams;
-
-                if (active !== undefined) searchParams.set('active', (active as any).toString());
+            } else if ('active' in params) {
+                const { active, country, company, job, searchQuery, dateOfBirth, phone } = params;
+                console.log(active)
+                if (active == true) searchParams.set('active', 'true');
                 if (country) searchParams.set('country', country);
                 if (company) searchParams.set('company', company);
                 if (job) searchParams.set('job', job);
                 if (searchQuery) searchParams.set('searchQuery', searchQuery);
+                if (dateOfBirth) searchParams.set('dateOfBirth', dateOfBirth);
+                if (phone) searchParams.set('phone', phone);
             }
+
             const response = await fetch(`${baseUrl}?${searchParams}`);
             if (!response.ok) throw new Error('Failed to fetch');
 
@@ -94,7 +94,6 @@ const FilterPanel = () => {
     useEffect(() => {
         fetchResults();
     }, [activeTab, filters, fetchResults]);
-
 
     const theme = {
         primary: 'text-blue-600',
@@ -130,19 +129,32 @@ const FilterPanel = () => {
                     </div>
                 </div>
             ) : (
-                <div className="flex items-center justify-between">
-                    <div>
+                <div className="flex items-center justify-between flex-col md:flex-row gap-2 md:gap-4">
+                    <div className="w-full md:w-auto">
                         <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
                             {results[index]?.name}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                            <FiUserCheck className={theme.primary} />
-                            {results[index]?.email}
-                        </p>
+                        <div className="text-sm text-gray-500 mt-1 space-y-1">
+                            <p className="flex items-center gap-2">
+                                <FiUserCheck className={theme.primary} />
+                                {results[index]?.email}
+                            </p>
+                            {results[index]?.dateOfBirth && (
+                                <p className="flex items-center gap-2">
+                                    <span className="font-medium">Date of birth:</span>
+                                    {new Date(results[index].dateOfBirth).toLocaleDateString('en-GB')}
+                                </p>
+                            )}
+                            {results[index]?.phone && (
+                                <p className="flex items-center gap-2">
+                                    <span className="font-medium">Phone:</span>
+                                    {results[index].phone}
+                                </p>
+                            )}
+                        </div>
                     </div>
-                    <div className="text-right">
-                        <span className={`px-2 py-1 text-xs rounded-full ${results[index]?.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                            }`}>
+                    <div className="text-right w-full md:w-auto flex flex-col items-end">
+                        <span className={`px-2 py-1 text-xs rounded-full ${results[index]?.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                             {results[index]?.active ? 'Active' : 'Inactive'}
                         </span>
                         {results[index]?.company && (
@@ -165,7 +177,6 @@ const FilterPanel = () => {
                     {/* Filter Controls */}
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-
                             {activeTab === 'products' ? (
                                 <ProductFilters
                                     filters={filters.products}
@@ -183,10 +194,8 @@ const FilterPanel = () => {
                                         ...prev,
                                         users: { ...prev.users, ...newFilters }
                                     }))}
-
                                 />
-                            )
-                            }
+                            )}
                         </div>
                     </div>
 
@@ -237,9 +246,9 @@ const FilterPanel = () => {
                                 </div>
                             ) : results.length > 0 ? (
                                 <List
-                                    height={600}
+                                    height={800}
                                     itemCount={results.length}
-                                    itemSize={80}
+                                    itemSize={120}
                                     width="100%"
                                     className="scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-blue-50 max-h-[60vh] overflow-y-auto"
                                 >
@@ -259,7 +268,7 @@ const FilterPanel = () => {
                                             } else {
                                                 setFilters(prev => ({
                                                     ...prev,
-                                                    users: { active: undefined, country: '', company: '', job: '', searchQuery: '' }
+                                                    users: { active: false, country: '', company: '', job: '', searchQuery: '', dateOfBirth: '', phone: '' }
                                                 }));
                                             }
                                         }}
@@ -276,4 +285,5 @@ const FilterPanel = () => {
         </ErrorBoundary>
     );
 };
+
 export default FilterPanel;

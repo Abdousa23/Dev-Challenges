@@ -20,8 +20,8 @@ app.add_middleware(
 )
 
 # Initialize models
-encoder = NeuralEncoder()
-forensic = AntiForensic()
+encoder = {}
+forensic = {}
 
 # Temporary storage (replace with proper storage in production)
 TEMP_DIR = "temp_files"

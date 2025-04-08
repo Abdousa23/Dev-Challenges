@@ -10,14 +10,25 @@ export interface Product {
 }
 
 export interface User {
-    id: string
-    name: string
-    email: string
-    active: boolean
+    id: any,
+    name: string,
+    email: string,
+    active: number,
+    company: string,
+    job: string,
+    registeredAt: Date,
+    dateOfBirth: Date,
+    phone: string,
+    username: string,
+    website: string,
+    age: string,
     address: {
+        street: string,
+        city: string,
+        state: string,
+        zipcode: string,
         country: string
     }
-    registered_at: string
 }
 
 

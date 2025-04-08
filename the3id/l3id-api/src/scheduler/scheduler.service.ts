@@ -12,12 +12,11 @@ export class SchedulerService {
     private readonly emailService: EmailService,
   ) { }
 
-  @Cron(CronExpression.EVERY_MINUTE) // In production, use EVERY_HOUR or specific time
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
     this.logger.debug('Checking for pending greetings...');
     const pendingGreetings = await this.greetingsService.findPending();
     const now = new Date();
-
     for (const greeting of pendingGreetings) {
       if (greeting.scheduledTime <= now) {
         this.logger.log(`Sending greeting ID: ${greeting.id}`);

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Database from 'better-sqlite3';
 import { getCachedQuery, cacheQuery, generateCacheKey } from '@/lib/cache';
+import { User } from '@/lib/types';
 
 interface UserFilterParams {
     active?: boolean;
@@ -8,9 +9,16 @@ interface UserFilterParams {
     company?: string;
     job?: string;
     searchQuery?: string;
+    dateOfBirth?: string;
+    phone?: string;
 }
 
 const db = new Database('filter.db');
+const normalizeDate = (date: string) => {
+    if (!date) return null;
+    const dateObj = new Date(date);
+    return dateObj.toISOString().split('T')[0];
+}
 
 export async function GET(request: Request) {
     try {
@@ -21,7 +29,9 @@ export async function GET(request: Request) {
             country: searchParams.get('country') || undefined,
             company: searchParams.get('company') || undefined,
             job: searchParams.get('job') || undefined,
-            searchQuery: searchParams.get('searchQuery') || undefined
+            searchQuery: searchParams.get('searchQuery') || undefined,
+            dateOfBirth: searchParams.get('dateOfBirth') || undefined,
+            phone: searchParams.get('phone') || undefined
         };
 
         const cacheKey = generateCacheKey(params);
@@ -29,56 +39,91 @@ export async function GET(request: Request) {
         if (cached) return NextResponse.json(cached);
 
         let query = `
-            SELECT 
-                id,
-                name,
-                email,
-                active,
-                country,
-                company,
-                job,
-                registered_at AS registeredAt
-            FROM users
-            WHERE 1=1
-        `;
+        SELECT 
+            u.id,
+            u.name,
+            u.email,
+            u.active,
+            u.company,
+            u.job,
+            u.registered_at AS registeredAt,
+            u.date_of_birth AS dateOfBirth,
+            u.phone,
+            u.username,
+            u.website,
+            a.street,
+            a.city,
+            a.state,
+            a.zipcode,
+            a.country AS addressCountry
+        FROM users u
+        LEFT JOIN addresses a ON u.id = a.user_id
+        WHERE 1=1
+    `;
 
         const queryParams: any[] = [];
 
-        // Active filter
+        // Filters (same as before)...
         if (params.active !== undefined) {
-            query += ' AND active = ?';
+            query += ' AND u.active = ?';
             queryParams.push(params.active ? 1 : 0);
         }
-
-        // Country filter
         if (params.country) {
-            query += ' AND country = ?';
+            query += ' AND a.country = ?';
             queryParams.push(params.country);
         }
-
-        // Company filter
         if (params.company) {
-            query += ' AND company LIKE ?';
+            query += ' AND u.company LIKE ?';
             queryParams.push(`%${params.company}%`);
         }
-
-        // Job filter
         if (params.job) {
-            query += ' AND job LIKE ?';
+            query += ' AND u.job LIKE ?';
             queryParams.push(`%${params.job}%`);
         }
-
-        // Search query
         if (params.searchQuery) {
-            query += ' AND (name LIKE ? OR email LIKE ?)';
+            query += ' AND (u.name LIKE ? OR u.email LIKE ?)';
             const searchTerm = `%${params.searchQuery}%`;
             queryParams.push(searchTerm, searchTerm);
+        }
+        console.log(params)
+        if (params.dateOfBirth) {
+
+            const normalizedDate = normalizeDate(params.dateOfBirth);
+            console.log(normalizeDate)
+            query += ' AND u.date_of_birth = ?';
+            queryParams.push(normalizedDate);
+        }
+
+        if (params.phone) {
+            query += ' AND u.phone LIKE ?';
+            queryParams.push(`%${params.phone}%`);
         }
 
         query += ' ORDER BY registeredAt DESC LIMIT 100';
 
         const stmt = db.prepare(query);
-        const results = stmt.all(...queryParams);
+        const rawResults = stmt.all(...queryParams);
+
+        const results = rawResults.map((user: any) => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            active: !!user.active,
+            company: user.company,
+            job: user.job,
+            registeredAt: user.registeredAt,
+            dateOfBirth: user.dateOfBirth,
+            phone: user.phone,
+            username: user.username,
+            website: user.website,
+            address: {
+                street: user.street,
+                city: user.city,
+                state: user.state,
+                zipcode: user.zipcode,
+                country: user.addressCountry
+            }
+        }));
 
         await cacheQuery(cacheKey, results);
         return NextResponse.json(results);

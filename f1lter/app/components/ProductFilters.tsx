@@ -28,8 +28,8 @@ const ProductFilters = ({ filters, categories, onFilterChange }: ProductFiltersP
                     Price Range
                 </label>
                 <PriceRange
-                    absoluteMin={0}
-                    absoluteMax={1000}
+                    min={0}
+                    max={1000}
                     currentMin={filters.minPrice}
                     currentMax={filters.maxPrice}
                     onChange={(min, max) => onFilterChange({ ...filters, minPrice: min, maxPrice: max })}
